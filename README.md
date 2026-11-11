@@ -1,5 +1,7 @@
 # Auren
 
+Auren is a modern rEFInd boot manager theme with a futuristic, gaming-inspired look. It comes with custom icons, backgrounds, and a clean layout. You can change the colors and branding to match your setup.
+
 A simple tool for customizing the existing black-and-orange Gigabyte rEFInd theme.
 
 ![Auren preview](preview.png)
