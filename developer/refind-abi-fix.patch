@@ -1,0 +1,63 @@
+--- a/Make.common
++++ b/Make.common
+@@ -131,7 +131,7 @@
+ ifeq ($(ARCH),x86_64)
+   GNUEFI_LDFLAGS += -znocombreloc -zdefs
+ 
+-  ARCH_CFLAGS = -DEFIX64 -DEFI_FUNCTION_WRAPPER -m64 -mno-red-zone 
++  ARCH_CFLAGS = -DEFIX64 -DEFI_FUNCTION_WRAPPER -DGNU_EFI_USE_MS_ABI -m64 -mno-red-zone 
+ ifeq ($(MAKEWITH),TIANO)
+   ARCH_CFLAGS += -mcmodel=large "-DEFIAPI=__attribute__((ms_abi))" 
+ endif
+--- a/include/refit_call_wrapper.h
++++ b/include/refit_call_wrapper.h
+@@ -3,7 +3,7 @@
+ 
+ #ifdef __MAKEWITH_GNUEFI
+ 
+-#if defined (EFIX64) | defined (AARCH64)
++#if (defined(EFIX64) || defined(AARCH64)) && !defined(HAVE_USE_MS_ABI)
+ # define refit_call1_wrapper(f, a1) \
+   uefi_call_wrapper(f, 1, (UINT64)(a1))
+ # define refit_call2_wrapper(f, a1, a2) \
+--- a/EfiLib/GenericBdsLib.h
++++ b/EfiLib/GenericBdsLib.h
+@@ -471,7 +471,7 @@
+ 
+ **/
+ CHAR16 *
+-EFIAPI
++/* GNU-EFI declares DevicePathToStr with the native C ABI. */
+ DevicePathToStr (
+   IN EFI_DEVICE_PATH_PROTOCOL     *DevPath
+   );
+--- a/EfiLib/DevicePath.c
++++ b/EfiLib/DevicePath.c
+@@ -1488,7 +1488,7 @@
+ 
+ **/
+ CHAR16 *
+-EFIAPI
++/* GNU-EFI declares DevicePathToStr with the native C ABI. */
+ DevicePathToStr (
+   IN EFI_DEVICE_PATH_PROTOCOL     *DevPath
+   )
+--- a/refind/main.c
++++ b/refind/main.c
+@@ -467,7 +467,9 @@
+ // main entry point
+ //
+ EFI_STATUS
++#ifndef __MAKEWITH_GNUEFI
+ EFIAPI
++#endif
+ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
+ {
+     EFI_STATUS         Status;
+--- a/refind-sbat-z890.csv
++++ b/refind-sbat-z890.csv
+@@ -1,3 +1,3 @@
+ sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
+ refind,1,Roderick W. Smith,refind,0.14.2,https://www.rodsbooks.com/refind
+-refind.z890,1,Z890,refind,0.14.2-sbat-aligned,https://www.rodsbooks.com/refind
++refind.z890,1,Z890,refind,0.14.2-sbat-abi-fixed,https://www.rodsbooks.com/refind

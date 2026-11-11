@@ -1,0 +1,16 @@
+[Unit]
+Description=Verify rEFInd and recover its trusted signed boot manager
+RequiresMountsFor=/boot/efi /var/lib/refind-integrity
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=-/usr/bin/python3 /etc/refind/integrity-guard.py check
+ExecStop=-/usr/bin/python3 /etc/refind/integrity-guard.py check
+TimeoutStartSec=45
+TimeoutStopSec=45
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

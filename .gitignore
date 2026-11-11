@@ -1,0 +1,9 @@
+__pycache__/
+build/
+*.pyc
+*.o
+*.obj
+*.so
+*.a
+*.lib
+developer/refind-source/**/*.efi

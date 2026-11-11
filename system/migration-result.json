@@ -1,0 +1,24 @@
+{
+  "project": "/run/media/Z890/Lenka/codebase/auren-refind-theme",
+  "removed": [
+    "/boot/efi/EFI/refind/refind.log",
+    "/boot/efi/EFI/refind/themes/catppuccin",
+    "/var/lib/refind-backups/20261111T165127Z",
+    "/var/lib/refind-backups/theme-20261111T174220Z",
+    "/var/lib/refind-backups/gigabyte-20261111T181209Z",
+    "/var/lib/refind-backups/signature-repair-20261111T181723Z",
+    "/var/lib/refind-backups/auren-20261111T184115Z",
+    "/var/home/Z890/refind-setup",
+    "/var/home/Z890/gigabyte-refind-theme",
+    "/var/home/Z890/auren-refind-refinement",
+    "/var/home/Z890/gigabyte-refind-theme.zip",
+    "/tmp/auren-portable-build.log"
+  ],
+  "active_binary_sha256": "0c5ae1f11b6145d88278d55aa4c4d0eb3d5f22604bf23b35a984e0286093672b",
+  "recovery_kept": "/var/lib/refind-integrity",
+  "private_keys_kept_in_system": true,
+  "temporary_logging_disabled": true,
+  "boot_entries_and_order_unchanged": true,
+  "secure_boot": "SecureBoot enabled",
+  "all_EFI_executables_unchanged": true
+}

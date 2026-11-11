@@ -1,0 +1,82 @@
+{
+  "old_calling_convention_test_exit": 1,
+  "corrected_calling_convention_test_exit": 0,
+  "func_about.png": {
+    "size": [
+      64,
+      64
+    ],
+    "visible_bbox": [
+      11,
+      11,
+      53,
+      53
+    ]
+  },
+  "func_firmware.png": {
+    "size": [
+      64,
+      64
+    ],
+    "visible_bbox": [
+      11,
+      11,
+      53,
+      53
+    ]
+  },
+  "func_reset.png": {
+    "size": [
+      64,
+      64
+    ],
+    "visible_bbox": [
+      12,
+      10,
+      51,
+      51
+    ]
+  },
+  "func_shutdown.png": {
+    "size": [
+      64,
+      64
+    ],
+    "visible_bbox": [
+      12,
+      11,
+      52,
+      53
+    ]
+  },
+  "os_bazzite.png": {
+    "size": [
+      144,
+      144
+    ],
+    "visible_bbox": [
+      8,
+      8,
+      136,
+      136
+    ]
+  },
+  "os_win.png": {
+    "size": [
+      144,
+      144
+    ],
+    "visible_bbox": [
+      8,
+      8,
+      136,
+      136
+    ]
+  },
+  "sbat_alignment": "0x10000000",
+  "unsigned_staged_binary_sha256": "36936004b22758e0ffb63dbd403da027054dbd63eee72529900da012c3230f59",
+  "main_config_unchanged": true,
+  "background_and_selection_assets_unchanged": true,
+  "signed_candidate_sha256": "0c5ae1f11b6145d88278d55aa4c4d0eb3d5f22604bf23b35a984e0286093672b",
+  "signed_candidate_verified": true
+}
