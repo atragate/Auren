@@ -24,7 +24,7 @@ This is a **generated 1920×1080 preview**, not a photograph or screenshot captu
 - Theme installation with asset-hash checks and one restore point.
 - Checks that loader paths, volume selections, timeout, default selection, EFI executables, and firmware boot order are preserved during installation.
 
-Auren uses native rEFInd settings: `banner`, `banner_scale`, `icons_dir`, `selection_big`, `selection_small`, `big_icon_size`, `small_icon_size`, `font`, `resolution`, `showtools`, and `hideui`. See the upstream [configuration reference](https://www.rodsbooks.com/refind/configfile.html) and [theming guide](https://www.rodsbooks.com/refind/themes.html).
+Auren uses native rEFInd settings: `banner`, `banner_scale`, `icons_dir`, `selection_big`, `selection_small`, `big_icon_size`, `small_icon_size`, `font`, `resolution`, `showtools`, `hideui`, and `use_graphics_for`. The generated configuration enables graphics handoff for all five recognized loader categories: `osx,linux,elilo,grub,windows`. The installer also sets `graphics on` in manual OS entries and their subentries, covering Shim and other loaders without depending on a distribution name. This suppresses rEFInd's normal text-mode launch information. See the upstream [configuration reference](https://www.rodsbooks.com/refind/configfile.html) and [theming guide](https://www.rodsbooks.com/refind/themes.html).
 
 ### Scope and limitations
 
@@ -129,7 +129,7 @@ Authenticate through `pkexec` when prompted. The helper rebuilds the theme, chec
    include themes/auren/theme.conf
    ```
 
-4. Updates explicit icon paths ending in `os_bazzite.png` or `os_win.png` to the installed Auren icons.
+4. Updates explicit icon paths ending in `os_bazzite.png` or `os_win.png` to the installed Auren icons, and sets `graphics on` in manual OS entries and subentries. This overrides an existing `graphics off` display setting without changing the loader or OS selection.
 5. Verifies the installed assets and checks that EFI executable hashes and firmware boot order have not changed.
 
 Activation is part of the command; you do not need to add a second include manually. The helper preserves loader paths, volume selections, scan settings, timeout, and default selection. It does not install the developer reference executable or change Secure Boot settings.
@@ -242,6 +242,7 @@ The shipped manufacturer and OS marks are examples, not required branding or a h
 | Icons are missing or look unchanged | Edit the exported SVG filenames, rebuild, and inspect explicit `icon` paths in the OS stanza. The helper only rewrites paths ending in `os_bazzite.png` or `os_win.png`. |
 | Utility row has unexpected or repeated-looking icons | Review active `showtools` settings and included configs. Auren defaults to four distinct actions. If the config is correct but default actions remain, investigate the installed rEFInd build; this project's development notes describe a calling-convention issue in an earlier custom build. Do not replace your executable just to test a theme. |
 | Firmware Settings is missing | rEFInd only shows that action when the firmware supports it. |
+| “Starting … / Using load options” remains visible when launching an OS | Rebuild and install the theme. Its config enables graphics handoff for the recognized loader categories, and the installer sets `graphics on` in manual entries, including Shim entries. This suppresses rEFInd's normal launch text, not real boot errors or messages from the next loader. The OS and firmware determine the subsequent logo and spinner. |
 | Border alignment or spacing is wrong | Check icon sizes and transparent padding in the SVGs. rEFInd controls tile positions; the preview is not an arbitrary layout editor. |
 | `PIL.Image` has no `Resampling` attribute | Use Pillow 9.1.0 or newer in the interpreter running the command. |
 | `magick` is missing or SVG export fails | Install ImageMagick with the `magick` command and working SVG support. An installation providing only `convert` does not satisfy the helper. |

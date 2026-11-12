@@ -44,6 +44,7 @@ def build():
   render(ROOT/f'sources/{name}.svg',BUILD/f'icons/{name}.png',accent)
  hide='singleuser,hints,arrows,badges,safemode,hwtest'+('' if c['show_labels'] else ',label')
  theme=f'''# Auren -- generated from theme.json
+use_graphics_for osx,linux,elilo,grub,windows
 resolution {w} {h}
 banner themes/auren/background.png
 banner_scale fillscreen
@@ -96,6 +97,35 @@ def atomic(path,data):
 def fingerprint_efi():
  return {str(p):digest(p) for p in Path('/boot/efi/EFI').rglob('*') if p.is_file() and p.suffix.lower()=='.efi'}
 
+def graphics_on_for_manual_entries(text):
+ """Keep manual OS launches graphical, including Shim/unknown loader types."""
+ tokens=list(re.finditer(r'"(?:[^"]|"")*"|\#[^\n]*|[{}]|[^\s{}"#]+',text))
+ stack=[];pending=None;edits=[]
+ for index,match in enumerate(tokens):
+  token=match.group()
+  if token.startswith(('#','"')):continue
+  line_start=text.rfind('\n',0,match.start())+1
+  first=not text[line_start:match.start()].strip()
+  if first and token in ('menuentry','submenuentry'):pending=token
+  elif token=='{':stack.append({'kind':pending,'graphics':False});pending=None
+  elif token=='}':
+   if not stack:raise ValueError('Unbalanced configuration braces.')
+   scope=stack.pop()
+   if scope['kind'] and not scope['graphics']:
+    indent=text[line_start:match.start()]
+    if indent.strip():raise ValueError('Manual entry closing braces must be on their own lines.')
+    edits.append((line_start,line_start,indent+'    graphics on\n'))
+  elif first and token=='graphics' and stack and stack[-1]['kind']:
+   scope=stack[-1];scope['graphics']=True
+   if index+1>=len(tokens):raise ValueError('Missing graphics setting value.')
+   value=tokens[index+1]
+   if '\n' in text[match.end():value.start()] or value.group().startswith(('#','}')):
+    raise ValueError('Missing graphics setting value.')
+   if value.group()!='on':edits.append((value.start(),value.end(),'on'))
+ if stack:raise ValueError('Unbalanced configuration braces.')
+ for start,end,replacement in sorted(edits,reverse=True):text=text[:start]+replacement+text[end:]
+ return text
+
 def apply():
  if os.geteuid()!=0:raise RuntimeError('Install must be authenticated.')
  target=root_path();theme=target/'themes/auren';config=target/'refind.conf'
@@ -111,6 +141,7 @@ def apply():
  else:changed=changed.rstrip()+'\ninclude themes/auren/theme.conf\n'
  for name in ('bazzite','win'):
   changed=re.sub(r'(?m)^(\s*icon\s+)[^\n]*os_'+name+r'\.png\s*$',r'\g<1>/EFI/refind/themes/auren/icons/os_'+name+'.png',changed)
+ changed=graphics_on_for_manual_entries(changed)
  for token in ('loader','volume','scanfor','timeout','default_selection'):
   pattern=rf'^\s*{token}\s+.*$'
   if re.findall(pattern,original,re.M)!=re.findall(pattern,changed,re.M):raise RuntimeError('Boot behavior would change; refusing.')
